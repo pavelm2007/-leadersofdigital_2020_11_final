@@ -10,18 +10,20 @@ RUN apt-get update && \
     mkdir -p /usr/share/man/man1/ /usr/share/man/man7/ && \
     apt-get install -y --no-install-recommends \
         gcc build-essential python-dev git curl postgresql-client libpq-dev && \
-    python3 -m pip install --no-cache-dir pip-tools && \
+    python3 -m pip install --no-cache-dir pip-tools virtualenv && \
     apt-get autoremove -y && \
     apt-get clean && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm -rf /usr/share/man && \
-    rm -rf /var/cache/apt/*
+    rm -rf /var/cache/apt/* && \
+    echo "source /srv/env/bin/activate" >> /root/.bashrc
 
-ADD . /app
-WORKDIR /app
+ENTRYPOINT ["docker-entrypoint.sh"]
+WORKDIR /srv/app
 
-RUN pip install -r requirements.txt && \
-    rm -rf ~/.pip
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chown -R root:staff /usr/local/bin/docker-entrypoint.sh \
+        && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 CMD gunicorn main.wsgi --log-file - -b 0.0.0.0:8000 --reload

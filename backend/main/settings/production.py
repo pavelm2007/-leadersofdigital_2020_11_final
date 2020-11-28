@@ -5,15 +5,27 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
 
+import environ
+env = environ.Env()
 
 DEBUG = False
 
 SECRET_KEY = config("SECRET_KEY")
 
+# DATABASES = {
+#     "default": config("DATABASE_URL", cast=db_url),
+# }
 DATABASES = {
-    "default": config("DATABASE_URL", cast=db_url),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PWD'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
 }
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
+# DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
@@ -107,4 +119,4 @@ LOGGING = {
 JS_REVERSE_EXCLUDE_NAMESPACES = ["admin"]
 
 # Sentry
-sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()], release=COMMIT_SHA)
+# sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()], release=COMMIT_SHA)
