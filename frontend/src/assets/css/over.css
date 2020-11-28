@@ -1,0 +1,8 @@
+.vacancy_card{}
+.vacancy_card__title{
+    cursor: pointer;
+}
+
+.hover_off{
+    background: inherit !important;
+}
