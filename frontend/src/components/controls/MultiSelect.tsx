@@ -19,18 +19,25 @@ export const MultiSelect = (props: Props) => {
 
   useEffect(() => {
     setVals([])
-  }, [valInits])
-
-  useEffect(() => {
     onChange(valInits)
   }, [valInits])
 
   const _onChange = (values: any[]) => {
-    setValInits([...valInits, ...values])
+    const arr = [...valInits, ...values]
+    const newInits = new Array()
+    const uniqueArr = new Array()
+    arr.forEach((item) => {
+      const v = item.value
+      if (!uniqueArr.includes(v)) {
+        uniqueArr.push(v)
+        newInits.push(item)
+      }
+    })
+    setValInits(newInits)
   }
 
   const removeItem = (item: ISelectItem) => {
-    const newInits = valInits.filter(i => i.title !== item.label)
+    const newInits = valInits.filter(i => i.value !== item.value)
     setValInits(newInits)
   }
 
@@ -41,7 +48,7 @@ export const MultiSelect = (props: Props) => {
         <Select
           isMulti
           value={vals}
-          defaultValue={{ label: "Select Dept", value: 0 }}
+          defaultValue={{label: 'Select Dept', value: 0}}
           onChange={(values) => _onChange(values)}
           options={items}/>
       </div>
@@ -53,7 +60,7 @@ export const MultiSelect = (props: Props) => {
                 <div className="chat-content p-l-0">
                   {valInits.map((v, i) => (
                     <div key={i} className={`box bg-light-info p-r-30  ${i > 0 ? 'm-l-10' : ''}`}>
-                      {v.title}
+                      {v.label}
                       <span
                         className={'text-danger m-l-5'}
                         style={{cursor: 'pointer'}}

@@ -13,6 +13,7 @@ export interface IVacancyItem {
   created: string
   title: string
   description: string
+  skills?: any[]
 }
 
 export type TVacancyItem = IVacancyItem
@@ -42,3 +43,23 @@ export interface ISelectItem {
   label: string
   value: string | number
 }
+
+export interface IResumeItem {
+  id: number
+  fio: string
+  skills: string[]
+  created: string
+}
+
+export type TResumeItem = IResumeItem
+
+export interface IResumeReportItem {
+  id: number
+  fio: string
+  compliance: number
+  firstCall: number | null
+  testResult: number | null
+  interviewResult: number | null
+  jobInvitation: boolean | null | number
+}
+export type TResumeReportItem = IResumeReportItem

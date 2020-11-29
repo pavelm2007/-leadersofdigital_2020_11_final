@@ -6,7 +6,7 @@ import withPrivateLayout from '../hoc/withProvateLayout'
 import useFetchDetailService from '../hooks/useFetchDetailService'
 import VacancyService from '../services/vacancy.service'
 import {RouteComponentProps} from 'react-router-dom'
-import {VacancyListCard} from '../components/vacancies'
+import {VacancyListCard, VacancyTabs} from '../components/vacancies'
 
 
 const mapState = ({auth}: RootState) => ({
@@ -41,11 +41,16 @@ export const Vacancy = (props: Props) => {
   const truncate = (input: string) => input.length > 5 ? `${input.substring(0, 25)}...` : input
 
   return (
-    <div className="row">
-      <div className="col-md-12">
-        {data !== null && <VacancyListCard {...data}/>}
+    <React.Fragment>
+      <div className="row">
+        <div className="col-md-12">
+          {data !== null && <VacancyListCard {...data}/>}
+        </div>
       </div>
-    </div>
+
+      <VacancyTabs vacancyId={parseInt(vacancyId)} />
+    </React.Fragment>
+
   )
 }
 

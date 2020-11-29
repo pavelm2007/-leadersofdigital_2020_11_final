@@ -26,9 +26,6 @@ const useFetchListService = (api: TVacancyService) => {
 
   }
 
-  // useEffect(() => {
-  //   fetchApi().then()
-  // }, [service])
   useEffect(() => {
     fetchApi().then()
   }, [])

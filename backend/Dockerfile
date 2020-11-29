@@ -2,26 +2,29 @@ FROM python:3.6-slim
 
 ENV PYTHONUNBUFFERED 1
 
-#RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
-# USER user
+RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
+WORKDIR /home/user/app/backend
 
 # Install system dependencies
-RUN apt-get update && \
-    mkdir -p /usr/share/man/man1/ /usr/share/man/man7/ && \
-    apt-get install -y --no-install-recommends \
-        gcc build-essential python-dev git curl postgresql-client libpq-dev && \
-    python3 -m pip install --no-cache-dir pip-tools && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm -rf /usr/share/man && \
-    rm -rf /var/cache/apt/*
+RUN apt-get update && apt-get install gcc build-essential libpq-dev -y && \
+    python3 -m pip install --no-cache-dir pip-tools
 
-ADD . /app
-WORKDIR /app
+# install python dependencies
+ADD *requirements.txt /home/user/app/backend/
+RUN pip install -r requirements.txt
 
-RUN pip install -r requirements.txt && \
-    rm -rf ~/.pip
+#ADD *requirements.in /home/user/app/backend/
+#RUN pip-compile requirements.in > requirements.txt && \
+#    pip-compile dev-requirements.in > dev-requirements.txt
 
+#RUN pip install -r requirements.txt && \
+#    pip install -r dev-requirements.txt
+
+# Clean the house
+RUN apt-get purge libpq-dev -y && apt-get autoremove -y && \
+    rm /var/lib/apt/lists/* rm -rf /var/cache/apt/*
+
+ADD . /home/user/app/backend
+
+USER user
 CMD gunicorn main.wsgi --log-file - -b 0.0.0.0:8000 --reload

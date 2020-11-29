@@ -9,3 +9,7 @@ export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'
 
 
 export const SET_PAGE = 'SET_PAGE'
+
+export enum AVacancy {
+  create='create'
+}

@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     "import_export",
     "apps.common",
     "apps.users",
-    "apps.konstruktor",
 ]
 
 MIDDLEWARE = [

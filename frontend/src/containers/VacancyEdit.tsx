@@ -1,19 +1,24 @@
 import React, {useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, useHistory} from 'react-router-dom'
 import {RootState} from '../reducers'
 import {setPage} from '../actions/page'
+import {createVacancy} from '../actions/vacancy'
 import withPrivateLayout from '../hoc/withProvateLayout'
 import {VacancyForm} from '../components/forms'
 import {TVacancyFormData} from '../types'
 
 
-const mapState = ({auth}: RootState) => ({
-  auth: auth
+const mapState = ({auth, vacancy}: RootState) => ({
+  auth: auth,
+  vacancy: vacancy
+
+
 })
 
 const mapDispatch = {
-  setPage
+  setPage,
+  createVacancy
 }
 
 const connector = connect(mapState, mapDispatch)
@@ -23,6 +28,7 @@ type TParams = { vacancyId?: string };
 type Props = PropsFromRedux & RouteComponentProps<TParams> & {}
 
 export const VacancyEdit = (props: Props) => {
+  const history = useHistory()
   useEffect(() => {
     props.setPage({
       title: 'Создать вакансию',
@@ -34,7 +40,10 @@ export const VacancyEdit = (props: Props) => {
   })
 
   const handleSubmit = (formData: TVacancyFormData) => {
-    console.log(formData)
+    props.createVacancy(formData).then((d) => {
+      const path = !!props.vacancy.vacancy.id ? `/vacancies/${props.vacancy.vacancy.id}` : `/vacancies`
+      history.push(path)
+    })
   }
 
   return (
